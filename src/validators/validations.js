@@ -1,7 +1,8 @@
 const mongoose = require('mongoose')
 
 const isValidTitle = (data) => {
-    if (typeof data == "string" && data.trim().length !== 0 && data.match(/Mr|Mrs|Miss/)) return true
+    let arr=["Mr","Mrs","Miss"]
+    if (typeof data == "string" && data.trim().length !== 0 && arr.includes(data)) return true
     return false
 }
 
@@ -25,6 +26,24 @@ const isValidPassword=(data)=>{
     return false
 }
 
+const isValidPincode=(data)=>{
+    if(typeof data =="string" && data.trim().length !==0 && data.match(/^[1-9][0-9]{5}$/)) return true
+    return false
+}
+
+const isValid = function (value) {
+    if (typeof value === "undefined" || value === null) return false;
+    if (typeof value === "string" && value.trim().length === 0) return false;
+    return true;
+};
+
+
 module.exports={
-    isValidTitle,isValidName,isValidPhone,isValidEmail,isValidPassword
+    isValidTitle,
+    isValidName,
+    isValidPhone,
+    isValidEmail,
+    isValidPassword,
+    isValidPincode,
+    isValid
 }

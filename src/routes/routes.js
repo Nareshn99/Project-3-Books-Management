@@ -8,8 +8,8 @@ router.get('/test-me',(req,res)=>{
     res.send("this API run succesfully...")
 })
 
-router.post('/register',usercontroller.createbook)
-router.post('/register',usercontroller.createbook)
+router.post('/register',usercontroller.createUser)
+
 
 
 
