@@ -114,6 +114,44 @@ const createbook = async (req, res) => {
     }
 }
 
+const getCollege = async function (req, res) {
+
+try {
+    
+    const clgName = req.query.collegeName
+    const query = req.query
+    const comp = ["collegeName"]
+    if (!Object.keys(query).every(elem => comp.includes(elem)))
+      return res.status(400).send({ status: false, msg: "wrong query parameters" });
+
+    if (!clgName)
+        return res.status(400).send({ status: false, message: "Please Enter CollegeName" })
+
+    const clgData = await collegeModel.findOne({ name: clgName, isDeleted: false })
+    if (!clgData)
+        return res.status(404).send({ status: false, message: "Please Enter Valid College Name" })
+
+
+    const clgId = clgData._id
+
+    const internData = await internModel.find({ collegeId: clgId, isDeleted: false }).select({ collegeId: 0, isDeleted: 0, __v: 0 })
+    if (internData.length == 0)
+        return res.status(404).send({ status: false, message: "No Internship Found For This College" })
+    const result = {
+        name: clgData.name,
+        fullName: clgData.fullName,
+        logoLink: clgData.logoLink,
+        interns: internData,
+    }
+    return res.status(200).send({ "data": result })
+}
+catch (err) {
+    return res.status(500).send({ status: false, message: err.message });
+}
+
+
+}
+
 
 module.exports={
     createbook
