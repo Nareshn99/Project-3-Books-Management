@@ -37,7 +37,15 @@ const isValid = function (value) {
     return true;
 };
 
+const isValidISBN=(data)=>{
+    if(typeof data =="string" && data.trim().length !==0 && data.match(/^[0-9]+$/)) return true
+    return false
+} 
 
+const isValidreviews=(data)=>{
+    if(typeof data =="number" && data.trim().length !==0 && data.match(/^[0-9]+$/)) return true
+    return false
+}
 module.exports={
     isValidTitle,
     isValidName,
@@ -45,5 +53,7 @@ module.exports={
     isValidEmail,
     isValidPassword,
     isValidPincode,
-    isValid
+    isValid,
+    isValidISBN,
+    isValidreviews
 }
