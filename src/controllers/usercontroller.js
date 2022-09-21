@@ -130,8 +130,8 @@ const userlogin = async function (req, res) {
             "ParshantNareshPriyankaVaseem",
             { expiresIn: '1h' }
         )
-
-        res.status(200).send({ status: true, message:"Success", data:{token:token} });
+            res.status(200).setHeader("x-api-key", token);
+        res.status(201).send({ status: true, message:"Success", data:{token:token} });
 
     } catch (err) {
         res.status(500).send({status:false, msg:err.message})
@@ -139,8 +139,4 @@ const userlogin = async function (req, res) {
 }
 
 
-module.exports={
-    createUser,
-    userlogin
-
-}
+module.exports={createUser, userlogin }
