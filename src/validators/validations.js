@@ -1,4 +1,9 @@
 const mongoose = require('mongoose')
+const emailRegex=/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+const phoneRegex=/^[6-9]\d{9}$/
+const passwordRegex=/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,15}$/
+const pincodeRegex=/^[1-9][0-9]{5}$/
+const ISBNregex=/^(?=(?:\D*\d){10}(?:(?:\D*\d){3})?$)[\d-]+$/
 
 const isValidTitle = (data) => {
     let arr=["Mr","Mrs","Miss"]
@@ -7,27 +12,27 @@ const isValidTitle = (data) => {
 }
 
 const isValidName=(data)=>{
-        if(typeof data =="string" && data.trim().length !==0 && data.match(/^[a-z]+$/)) return true
+        if(typeof data == "string" && data.trim().length !==0 && /^[a-zA-Z]+$/.test(data)) return true
         return false
 }  
 
 const isValidPhone=(data)=>{
-    if(typeof data =="string" && data.trim().length !==0 && data.match(/^[6-9]\d{9}$/)) return true
+    if(typeof data =="string" && data.trim().length !==0 && phoneRegex.test(data)) return true
     return false
 }
 
 const isValidEmail=(data)=>{
-    if(typeof data =="string" && data.trim().length !==0 && data.match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/)) return true
+    if(typeof data =="string" && data.trim().length !==0 && emailRegex.test(data)) return true
     return false
 }
 
 const isValidPassword=(data)=>{
-    if(typeof data =="string" && data.trim().length !==0 && data.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,15}$/)) return true
+    if(typeof data =="string" && data.trim().length !==0 && passwordRegex.test(data)) return true
     return false
 }
 
 const isValidPincode=(data)=>{
-    if(typeof data =="string" && data.trim().length !==0 && data.match(/^[1-9][0-9]{5}$/)) return true
+    if(typeof data =="string" && data.trim().length !==0 && pincodeRegex.test(data)) return true
     return false
 }
 
@@ -38,12 +43,12 @@ const isValid = function (value) {
 };
 
 const isValidISBN=(data)=>{
-    if(typeof data =="string" && data.trim().length !==0 && data.match(/^[0-9]+$/)) return true
+    if(typeof data =="string" && data.trim().length !==0 && ISBNregex.test(data)) return true
     return false
 } 
 
 const isValidreviews=(data)=>{
-    if(typeof data =="number" && data.trim().length !==0 && data.match(/^[0-9]+$/)) return true
+    if(typeof data =="number" && data.trim().length !==0 && /^[0-9]+$/.test(data)) return true
     return false
 }
 module.exports={
