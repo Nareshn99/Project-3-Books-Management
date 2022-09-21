@@ -1,5 +1,6 @@
 const express = require('express');
 const route = require('./routes/routes.js');
+
 const mongoose = require('mongoose');
 const app = express();
 
@@ -14,9 +15,7 @@ mongoose.connect("mongodb+srv://priyanka99:EorbzmKpqdV7ml9W@cluster0.puozp1a.mon
     .catch(err => console.log(err))
 
 
-
 app.use('/', route);
-
 
 
 app.listen(3000, function () {

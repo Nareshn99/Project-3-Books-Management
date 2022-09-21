@@ -19,7 +19,7 @@ const createUser = async (req, res) => {
         }
         let arr=["Mr","Mrs","Miss"]
         if (!validation.isValidTitle(title)) {
-            return res.status(400).send({ status: false, message: `Title can only be -${arr.join(",")} / String only`})
+            return res.status(400).send({ status: false, message: `Title can only be ${arr.join(",")} / String only`})
         }
 
         //validation for name
