@@ -115,46 +115,95 @@ const createbook = async (req, res) => {
     }
 }
 
-const getCollege = async function (req, res) {
 
-try {
-    
-    const clgName = req.query.collegeName
-    const query = req.query
-    const comp = ["collegeName"]
-    if (!Object.keys(query).every(elem => comp.includes(elem)))
-      return res.status(400).send({ status: false, msg: "wrong query parameters" });
+const getBookById = async (req, res) => {
+    try {
+        let bookId = req.params.bookId
 
-    if (!clgName)
-        return res.status(400).send({ status: false, message: "Please Enter CollegeName" })
+        //validation for bookId
+        if (!mongoose.Types.ObjectId.isValid(bookId)) {
+            return res.status(400).send({ status: false, message: "BookId is not valid,please enter valid ID" })
+        }
 
-    const clgData = await collegeModel.findOne({ name: clgName, isDeleted: false })
-    if (!clgData)
-        return res.status(404).send({ status: false, message: "Please Enter Valid College Name" })
+        let book = await bookmodel.findOne({ _id: bookId, isDeleted: false }).lean();
+        if (!book) {
+            return res.status(404).send({ status: false, message: "Book is not found for this ID" })
+        }
 
+        let bookreview = await reviewmodel.find({ bookId: bookId, isDeleted: false })
+        book["reviewsData"] = bookreview
 
-    const clgId = clgData._id
+        res.status(200).send({ status: true, message: "Books list", data: book })
 
-    const internData = await internModel.find({ collegeId: clgId, isDeleted: false }).select({ collegeId: 0, isDeleted: 0, __v: 0 })
-    if (internData.length == 0)
-        return res.status(404).send({ status: false, message: "No Internship Found For This College" })
-    const result = {
-        name: clgData.name,
-        fullName: clgData.fullName,
-        logoLink: clgData.logoLink,
-        interns: internData,
     }
-    return res.status(200).send({ "data": result })
-}
-catch (err) {
-    return res.status(500).send({ status: false, message: err.message });
-}
-
-
+    catch (err) {
+        res.status(500).send({ status: false, message: err.message })
+    }
 }
 
+const getBookByParam = async function(req,res) {
+    try{
+        let newData = req.query
+        const { userId ,category,subcategory} = newData
 
-module.exports={
-    createbook
+         //check for empty requestBody
+         if (Object.keys(newData).length == 0) return res.status(400).send({ status: false, message: "queries shouldn't be empty" })
+
+        // let filterquery = {...newData, isDeleted : false, deletedAt : null};
+
+         //validation for userId
+        //  if (!userId) {
+        //     return res.status(400).send({ status: false, msg: "Please provide userId. it's mandatory" })
+        // }
+
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            return res.status(400).send({ status: false, msg: "Invalid userID" })
+        }
+
+         //validation for category
+         if (category) {
+            if(!validation.isValidName(category)){
+            return res.status(400).send({ status: false, message: "Invalid category" })
+            }
+        }
+        // if (!validation.isValidName(category)) {
+        //     return res.status(400).send({ status: false, message: "Category should be alphabatical Order And String is valid" })
+        // }
+
+         //validation for subcategory
+         if (subcategory) {
+            if(!validation.isValidName(subcategory)){
+            return res.status(400).send({ status: false, message: "Invalid subcategory" })
+            }
+        }
+        // if (!validation.isValidName(subcategory)) {
+        //     return res.status(400).send({ status: false, message: "Subcategory should be alphabatical Order And String is valid" })
+        // }
+        
+        // let validUserId = await bookModel.findone({ $or: [ { userId: userId }, { category: category }, {subcategory: subcategory} ] })
+
+        // if (validUserId.userId != req.params.userId) return res.status(400).send({status: false,message: 'Unauthorised access'});
+        // }
+        // if(validUserId.length == 0)return res.status(400).send({status : false, message : 'No Book Found',})
+
+        const books = await bookModel.find(filterQuery).select({ title: 1, excerpt: 1, userId: 1, category: 1, releasedAt: 1, reviews: 1 }).sort({ title: 1 });
+
+        if (books.length == 0) {
+            return res.status(404).send({ status: false, message: "No booksfound" });
+        }
+        
+        res.status(200).send({ status: true, message: 'successfully book details', data: books });
+   
+       }catch(err){
+        res.status(500).send({ status : false, message : err.massage})
+    }
 
 }
+
+module.exports={ 
+    createbook,
+    getBookById,
+    getBookByParam
+}
+   
+ 

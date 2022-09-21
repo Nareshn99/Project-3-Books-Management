@@ -15,6 +15,9 @@ router.post('/login',usercontroller.userlogin)
 
 //API for BOOKS
 router.post('/books',bookcontroller.createbook)
+router.get("/books", )
+router.get("/books/:bookId", bookcontroller.getBookById)
+router.put("/books/:bookId", bookcontroller)
 
 
 
