@@ -5,6 +5,7 @@ const moment = require("moment")
 const validation=require("../validators/validations")
 
 const createbook = async (req, res) => {
+    
     try {
         let requestBody = req.body;
         let { title, excerpt, userId, ISBN, category, subcategory, reviews, deletedAt, releasedAt } = requestBody
@@ -98,7 +99,7 @@ const createbook = async (req, res) => {
             }
             let date=moment().format("YYYY-MM-DD")
             if(!moment(releasedAt).isAfter(date)){
-                return res.status(400).send({status:false, msg:"pls provide a valid date"})
+                return res.status(400).send({status:false, msg:"pls provide an upcoming date"})
             }
         }
         if(!releasedAt){
@@ -106,7 +107,7 @@ const createbook = async (req, res) => {
         }
 
         let data = await bookmodel.create(requestBody)
-        return res.status(201).send({ status: true, message:"Success", data: data })
+        res.status(201).send({ status: true, message:"Success", data: data })
 
     }
     catch (err) {
