@@ -1,4 +1,3 @@
-const mongoose = require('mongoose')
 const emailRegex=/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
 const phoneRegex=/^[6-9]\d{9}$/
 const passwordRegex=/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,15}$/
@@ -12,7 +11,7 @@ const isValidTitle = (data) => {
 }
 
 const isValidName=(data)=>{
-        if(typeof data == "string" && data.trim().length !==0 && /^[a-zA-Z]+$/.test(data)) return true
+        if(typeof data == "string" && data.trim().length !==0 && /^[a-z A-Z]+$/.test(data)) return true
         return false
 }  
 
@@ -51,6 +50,12 @@ const isValidreviews=(data)=>{
     if(typeof data =="number" && data.trim().length !==0 && /^[0-9]+$/.test(data)) return true
     return false
 }
+
+const isValidrating=(data)=>{
+    if(typeof data =="number" && data.trim().length !==0 && /^[1-5]+$/.test(data)) return true
+    return false
+}
+
 module.exports={
     isValidTitle,
     isValidName,
@@ -60,5 +65,6 @@ module.exports={
     isValidPincode,
     isValid,
     isValidISBN,
-    isValidreviews
+    isValidreviews,
+    isValidrating
 }
