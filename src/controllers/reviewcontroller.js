@@ -1,18 +1,20 @@
 const reviewmodel = require('../models/reviewmodel')
 const bookmodel = require('../models/bookmodel')
-
+const mongoose = require("mongoose")
+const moment = require("moment")
+const validation = require("../validators/validations")
 
 const createreview = async (req, res) => {
     try {
 
         const requestbody = req.body
-        let { bookId, reviewedBy, reviewedAt, rating, review } = requestbody
-        let BookId = (req.params.bookId || bookId)
+        let { reviewedBy, reviewedAt, rating, review } = requestbody
+        let BookId = req.params.bookId
+        requestbody.bookId = BookId
 
-
-        //validation for bookId pendingggg................
+        //validation for bookId
         if (!mongoose.Types.ObjectId.isValid(BookId)) {
-            return res.status(400).send({ status: false, message: "BookId is not valid,please enter valid ID" })
+            return res.status(400).send({ status: false, message: "Invalid bookId" })
         }
         let book = await bookmodel.findOne({ _id: BookId, isDeleted: false });
         if (!book) {
@@ -20,7 +22,7 @@ const createreview = async (req, res) => {
         }
 
         //check for empty requestBody
-        if (Object.keys(requestBody).length == 0) {
+        if (Object.keys(requestbody).length == 0) {
             return res.status(400).send({ status: false, message: "Please provide book details" })
         }
 
@@ -32,17 +34,17 @@ const createreview = async (req, res) => {
             return res.status(400).send({ status: false, message: "ReviewedBy should be alphabatical Order And String is valid" })
         }
 
-        //validation for reviewedAt
-        if (!reviewedAt) {
-            return res.status(400).send({ status: false, message: "ReviewedAt is mandatory" })
-        }
-        if (!moment(reviewedAt, "YYYY-MM-DD", true).isValid()) {
-            return res.status(400).send({ status: false, msg: "ReviewedAt should be in YYYY-MM-DD format" })
-        }
-        let date = moment().format("YYYY-MM-DD")
-        if (!moment(reviewedAt).isAfter(date)) {
-            return res.status(400).send({ status: false, msg: "pls provide an upcoming date" })
-        }
+        // //validation for reviewedAt
+        // if (!reviewedAt) {
+        //     return res.status(400).send({ status: false, message: "ReviewedAt is mandatory" })
+        // }
+        // if (!moment(reviewedAt, "YYYY-MM-DD", true).isValid()) {
+        //     return res.status(400).send({ status: false, msg: "ReviewedAt should be in YYYY-MM-DD format" })
+        // }
+        // let date = moment().format("YYYY-MM-DD")
+        // if (!moment(reviewedAt).isAfter(date)) {
+        //     return res.status(400).send({ status: false, msg: "pls provide an upcoming date" })
+        // }
 
         //validation for rating
         if (!rating) {
@@ -58,10 +60,9 @@ const createreview = async (req, res) => {
                 return res.status(400).send({ status: false, message: "Review should be alphabatical Order And String is valid" })
             }
         }
-
         await reviewmodel.create(requestbody)
-        let Update = await bookModel.findOneAndUpdate({ BookId }, { $inc: { reviews: 1 } }, { new: true });
-        return res.status(201).send({ status: true, message: "Review added", data: Update })
+        let update = await bookmodel.findOneAndUpdate({ _id: BookId }, { $inc: { reviews: 1 } }, { new: true });
+        res.status(201).send({ status: true, message: "Review added", data: update })
     }
     catch (err) {
         res.status(500).send({ status: false, message: err.message })
@@ -75,7 +76,8 @@ const updatereview = async (req, res) => {
         const requestbody = req.body
         let { rating, review, reviewedBy } = requestbody
         let bookId = req.params.bookId
-        let reviewId = req.body.reviewId
+        let reviewId = req.params.reviewId
+
         //validation for bookId
         if (!mongoose.Types.ObjectId.isValid(bookId)) {
             return res.status(400).send({ status: false, message: "BookId is not valid,please enter valid ID" })
@@ -95,7 +97,7 @@ const updatereview = async (req, res) => {
         }
 
         //check for empty requestBody
-        if (Object.keys(requestBody).length == 0) {
+        if (Object.keys(requestbody).length == 0) {
             return res.status(400).send({ status: false, message: "Please provide book details" })
         }
 
@@ -121,9 +123,9 @@ const updatereview = async (req, res) => {
         }
 
 
-        let updatedreview = await reviewmodel.findOneAndUpdate({ bookId: bookId, isDeleted: false }, {
+        let updatedreview = await reviewmodel.findOneAndUpdate({ _id: reviewId, isDeleted: false }, {
             $set: {
-                rating, review, reviewedBy
+                requestbody
             }, new: true
         })
         book["reviewsData"] = updatedreview
@@ -140,7 +142,7 @@ const deletereview = async (req, res) => {
     try {
 
         let bookId = req.params.bookId
-        let reviewId = req.body.reviewId
+        let reviewId = req.params.reviewId
         //validation for bookId
         if (!mongoose.Types.ObjectId.isValid(bookId)) {
             return res.status(400).send({ status: false, message: "BookId is not valid,please enter valid ID" })
@@ -159,8 +161,7 @@ const deletereview = async (req, res) => {
             return res.status(404).send({ status: false, message: "review is not found for this ID" })
         }
 
-        await bookModel.findOneAndUpdate({ bookId }, { isDeleted: true, deletedAt: Date() });
-        let Update = await bookModel.findOneAndUpdate({ BookId }, { $inc: { reviews: -1 } }, { new: true });
+        let Update = await bookmodel.findOneAndUpdate({ _id: bookId }, { isDeleted: true, deletedAt: Date(), $inc: { reviews: -1 } }, { new: true });
         return res.status(200).send({ status: true, message: "Review Deleted", data: Update })
 
     }

@@ -6,32 +6,32 @@ const ISBNregex=/^(?=(?:\D*\d){10}(?:(?:\D*\d){3})?$)[\d-]+$/
 
 const isValidTitle = (data) => {
     let arr=["Mr","Mrs","Miss"]
-    if (typeof data == "string" && data.trim().length !== 0 && arr.includes(data)) return true
+    if (typeof data == "string" && data.trim().length !== 0 && arr.includes(data.trim())) return true
     return false
 }
 
 const isValidName=(data)=>{
-        if(typeof data == "string" && data.trim().length !==0 && /^[a-z A-Z]+$/.test(data)) return true
+        if(typeof data == "string" && data.trim().length !==0 && /^[a-z A-Z]+$/.test(data.trim())) return true
         return false
 }  
 
 const isValidPhone=(data)=>{
-    if(typeof data =="string" && data.trim().length !==0 && phoneRegex.test(data)) return true
+    if(typeof data =="string" && data.trim().length !==0 && phoneRegex.test(data.trim())) return true
     return false
 }
 
 const isValidEmail=(data)=>{
-    if(typeof data =="string" && data.trim().length !==0 && emailRegex.test(data)) return true
+    if(typeof data =="string" && data.trim().length !==0 && emailRegex.test(data.trim())) return true
     return false
 }
 
 const isValidPassword=(data)=>{
-    if(typeof data =="string" && data.trim().length !==0 && passwordRegex.test(data)) return true
+    if(typeof data =="string" && data.trim().length !==0 && passwordRegex.test(data.trim())) return true
     return false
 }
 
 const isValidPincode=(data)=>{
-    if(typeof data =="string" && data.trim().length !==0 && pincodeRegex.test(data)) return true
+    if(typeof data =="string" && data.trim().length !==0 && pincodeRegex.test(data.trim())) return true
     return false
 }
 
@@ -42,7 +42,7 @@ const isValid = function (value) {
 };
 
 const isValidISBN=(data)=>{
-    if(typeof data =="string" && data.trim().length !==0 && ISBNregex.test(data)) return true
+    if(typeof data =="string" && data.trim().length !==0 && ISBNregex.test(data.trim())) return true
     return false
 } 
 
@@ -52,7 +52,7 @@ const isValidreviews=(data)=>{
 }
 
 const isValidrating=(data)=>{
-    if(typeof data =="number" && data.trim().length !==0 && /^[1-5]+$/.test(data)) return true
+    if(typeof data =="number" && data.trim().length !==0 && /^([1-5])$/.test(data)) return true
     return false
 }
 

@@ -19,7 +19,8 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
-      match: [/^(\+\d{1,3}[- ]?)?\d{10}$/],
+      trim:true
+      
     },
     email: {
       type: String,
@@ -27,15 +28,14 @@ const userSchema = new mongoose.Schema(
       unique: true,
       trim: true,
       lowercase: true,
-      match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/], //abc@gmail.com
+      
     },
     password: {
       type: String,
       required: true,
-      match: [
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,15}$/,
-      ], //Minimum eight and maximum 15 characters, at least one uppercase letter, one lowercase letter, one number and one special character
+      trim:true
     },
+
     address: {
       street: { type: String, trim: true, lowercase: true },
       city: { type: String, trim: true, lowercase: true },
