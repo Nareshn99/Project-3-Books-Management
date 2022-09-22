@@ -144,7 +144,7 @@ const updateBookMid = async (req, res, next) => {
             }
             let date = moment().format("YYYY-MM-DD")
             if (!moment(releasedAt).isAfter(date)) {
-                return res.status(400).send({ status: false, msg: "pls provide a valid date" })
+                return res.status(400).send({ status: false, msg: "pls provide a upcoming date" })
             }
         }
 

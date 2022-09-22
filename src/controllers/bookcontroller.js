@@ -125,6 +125,7 @@ const updatebook = async (req, res) => {
     try {
 
         let bookId = req.params.bookId
+        console.log(bookId)
       
         let requestbody = req.body
         let { title, excerpt, releasedAt, ISBN } = requestbody
@@ -141,7 +142,7 @@ const updatebook = async (req, res) => {
             }
         }
 
-        let updatedBook = await bookmodel.findOneAndUpdate({ bookId }, {$set : requestbody , new : true})
+        let updatedBook = await bookmodel.findOneAndUpdate({ _id:bookId, isDeleted:false }, {$set : requestbody },{new:true})
         if(!updatedBook){
             return res.status(404).send({ status: false, message: "book does not exist" })
         }
@@ -173,7 +174,8 @@ const deletebyId = async (req, res) => {
             return res.status(403).send({status:false, msg:"unauthorized access"})
         } 
 
-        let update = await bookmodel.findOneAndUpdate({ bookId }, { isDeleted: true, deletedAt: Date() }, { new: true });
+        let update = await bookmodel.findOneAndUpdate({ _id:bookId }, { isDeleted: true, deletedAt:moment().format("YYYY-MM-DD") }, { new: true });
+        // console.log(update)
 
         res.status(200).send({ status: true, message: "successfully deleted" });
 
