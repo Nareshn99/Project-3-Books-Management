@@ -13,18 +13,17 @@ router.get('/test-me', (req, res) => {
     res.send("this API run succesfully...")
 })
 
-router.use("/books",authMid.authenticationMid)
 
 //API for USER
 router.post('/register',userMid.createUserMid, usercontroller.createUser)
 router.post('/login', usercontroller.userlogin)
 
 //API for BOOKS
-router.post('/books',bookMid.createBookMid, bookcontroller.createBook)
-router.get("/books",bookMid.getBookByQueryParamMid, bookcontroller.getBookByQueryParam)
-router.get("/books/:bookId", bookcontroller.getBookById)
-router.put("/books/:bookId",bookMid.updateBookMid, bookcontroller.updateBook)
-router.delete("/books/:bookId", bookcontroller.deleteById)
+router.post('/books',authMid.authenticationMid,bookMid.createBookMid, bookcontroller.createBook)
+router.get("/books",authMid.authenticationMid, bookMid.getBookByQueryParamMid, bookcontroller.getBookByQueryParam)
+router.get("/books/:bookId",authMid.authenticationMid, bookcontroller.getBookById)
+router.put("/books/:bookId",authMid.authenticationMid, bookMid.updateBookMid, bookcontroller.updateBook)
+router.delete("/books/:bookId",authMid.authenticationMid, bookcontroller.deleteById)
 
 //API for REVIEW
 router.post('/books/:bookId/review',reviewMid.createReviewMid, reviewcontroller.createReview)

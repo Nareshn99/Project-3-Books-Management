@@ -3,6 +3,7 @@ const phoneRegex=/^[6-9]\d{9}$/
 const passwordRegex=/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,15}$/
 const pincodeRegex=/^[1-9][0-9]{5}$/
 const ISBNregex=/^(?=(?:\D*\d){10}(?:(?:\D*\d){3})?$)[\d-]+$/
+const mongoose = require("mongoose")
 
 const isValidTitle = (data) => {
     let arr=["Mr","Mrs","Miss"]
@@ -58,7 +59,7 @@ const isValidObjectId = (data) => {
 
 
 const isValidrating=(data)=>{
-    if(typeof data =="number" && data.trim().length !==0 && /^([1-5])$/.test(data)) return true
+    if(typeof data =="number" && /^([1-5])$/.test(data)) return true
     return false
 }
 
@@ -71,7 +72,7 @@ module.exports={
     isValidPincode,
     isValid,
     isValidISBN,
-    isValidreviews,
+    
     isValidrating,
     isValidObjectId
 }

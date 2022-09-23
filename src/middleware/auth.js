@@ -17,7 +17,6 @@ const authenticationMid = (req,res,next)=> {
                 req.userId=result.userId
                 next()
             }
-
         )
     }
     catch(err){

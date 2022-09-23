@@ -16,14 +16,12 @@ const createReviewMid = async (req, res, next) => {
         if (!validation.isValidObjectId(bookId)) {
             return res.status(400).send({ status: false, message: "Invalid bookId" })
         }
-        requestbody.bookId = bookId
        
- 
         //check for empty requestBody
         if (Object.keys(requestbody).length == 0) {
             return res.status(400).send({ status: false, message: "Please provide book details" })
         }
-
+        requestbody.bookId = bookId
         if (!validation.isValidName(reviewedBy)) {
             return res.status(400).send({ status: false, message: "ReviewedBy should be alphabatical Order And String is valid" })
         }
@@ -32,11 +30,11 @@ const createReviewMid = async (req, res, next) => {
         requestbody.reviewedAt=moment().format("YYYY-MM-DD")
 
         //validation for rating
-        if (!rating) {
+        if ( rating == undefined) {
             return res.status(400).send({ status: false, message: "Rating is mandatory" })
         }
         if (!validation.isValidrating(rating)) {
-            return res.status(400).send({ status: false, message: "Rating should be in Number (1-5)" })
+            return res.status(400).send({ status: false, message: "rating must be present and in between 1-5" })
         }
 
         //validation for reviews
@@ -53,7 +51,7 @@ const createReviewMid = async (req, res, next) => {
     }
 }
 
-const updateReviewMid = async (req, res) => {
+const updateReviewMid = async (req, res, next) => {
     try {
 
         const requestbody = req.body
@@ -76,7 +74,7 @@ const updateReviewMid = async (req, res) => {
         }
 
         //validation for rating
-        if (rating) {
+        if (rating != undefined) {
             if (!validation.isValidrating(rating)) {
                 return res.status(400).send({ status: false, message: "Rating should be in Number (1-5)" })
             }
