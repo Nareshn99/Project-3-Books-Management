@@ -1,6 +1,4 @@
-const bookmodel = require('../models/bookmodel')
-const usermodel = require('../models/userModel')
-const reviewmodel = require('../models/reviewmodel')
+
 const mongoose = require("mongoose")
 const moment = require("moment")
 const validation = require("../validators/validations")
@@ -11,7 +9,7 @@ const createBookMid = async (req, res,next) => {
 
     try {
         let requestBody = req.body;
-        let { title, excerpt, userId, ISBN, category, subcategory, reviews, deletedAt, releasedAt } = requestBody
+        let { title, excerpt, userId, ISBN, category, subcategory, releasedAt } = requestBody
 
         //check for empty requestBody
         if (Object.keys(requestBody).length == 0) return res.status(400).send({ status: false, message: "Please provide book details" })
@@ -40,7 +38,7 @@ const createBookMid = async (req, res,next) => {
         if (!userId) {
             return res.status(400).send({ status: false, msg: "Please provide userId. it's mandatory" })
         }
-        if (!mongoose.Types.ObjectId.isValid(userId)) {
+        if (!validation.isValidObjectId(userId)) {
             return res.status(400).send({ status: false, msg: "Invalid userID" })
         }
 
@@ -72,14 +70,7 @@ const createBookMid = async (req, res,next) => {
             return res.status(400).send({ status: false, message: "Subcategory should be alphabatical Order And String is valid" })
         }
 
-        //validation for reviews
-        if (reviews) {
-            if (!validation.isValidreviews(reviews)) {
-                return res.status(400).send({ status: false, message: "Reviews should be in Number" })
-            }
-        }
-
-        //validation for releasedAt pending...........
+        //validation for releasedAt
         if (releasedAt) {
             if (!moment(releasedAt, "YYYY-MM-DD", true).isValid()) {
                 return res.status(400).send({ status: false, msg: "releasedAt should be in YYYY-MM-DD format" })
@@ -98,9 +89,67 @@ const createBookMid = async (req, res,next) => {
 
     }
     catch (err) {
-        res.status(500).send({ status: false, message: err.message })
+        return res.status(500).send({ status: false, message: err.message })
     }
 }
+
+const getBookByQueryParamMid = async (req, res, next) => {
+    try {
+        let newData = req.query
+        const { userId, category, subcategory } = newData
+
+        //check for empty requestBody
+        if (Object.keys(newData).length == 0) {
+            return res.status(400).send({ status: false, message: "queries shouldn't be empty" })
+        }
+
+        let arr=["userId", "category", "subcategory"]
+        for(let key in newData){
+            if(!arr.includes(key)){
+                res.status(400).send({status:false, message:`QueryParams can only be - ${arr.join(",")}`})
+                return
+            }
+        }
+
+        for(let key in newData){
+            if(newData[key].length==0){
+                res.status(400).send({status:false, message:`${key} can't be empty`})
+                return
+            }
+        }
+
+        let filterquery = { ...newData, isDeleted: false };
+
+        //validation for userId
+        if (userId) {
+            if (!validation.isValidObjectId(userId)) {
+                return res.status(400).send({ status: false, message: "Invalid userID" })
+            }
+        }
+
+        //validation for category
+        if (category) {
+            if (!validation.isValidName(category)) {
+                return res.status(400).send({ status: false, message: "Invalid category" })
+            }
+        }
+
+        //validation for subcategory
+        if (subcategory) {
+            if (!validation.isValidName(subcategory)) {
+                return res.status(400).send({ status: false, message: "Invalid subcategory" })
+            }
+        }
+        req.filterquery=filterquery
+        next()
+
+    } catch (err) {
+        return res.status(500).send({ status: false, message: err.message })
+    }
+
+}
+
+
 
 
 const updateBookMid = async (req, res, next) => {
@@ -109,8 +158,8 @@ const updateBookMid = async (req, res, next) => {
         let bookId = req.params.bookId
 
         //validation for bookId
-        if (!mongoose.Types.ObjectId.isValid(bookId)) {
-            return res.status(400).send({ status: false, message: "Invalid bookId" })
+        if(!validation.isValidObjectId(bookId)){
+            return res.status(400).send({status:false, message:"Invalid bookId"})
         }
 
       
@@ -159,7 +208,7 @@ const updateBookMid = async (req, res, next) => {
         next()
     }
     catch (err) {
-        res.status(500).send({ status: false, message: err.message })
+        return res.status(500).send({ status: false, message: err.message })
     }
 }
 
@@ -167,6 +216,7 @@ const updateBookMid = async (req, res, next) => {
 
 module.exports={
     createBookMid,
+    getBookByQueryParamMid,
     updateBookMid
 
 }

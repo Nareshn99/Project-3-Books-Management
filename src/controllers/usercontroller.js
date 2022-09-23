@@ -1,4 +1,4 @@
-const usermodel = require('../models/userModel')
+const userModel = require('../models/userModel')
 const validation = require('../validators/validations')
 const jwt = require("jsonwebtoken")
 
@@ -7,11 +7,10 @@ const createUser = async (req, res) => {
     try {
         let requestBody = req.body
 
-        let { title, name, phone, email, password, address } = requestBody
+        let { phone, email, } = requestBody
         
         // Check for uniqueness of phone and email
-        let user = await usermodel.find({$or : [ {phone} , {email} ] })
-        // console.log(user)
+        let user = await userModel.find({$or : [ {phone} , {email} ] })
         for(let key of user){
             if(key.phone==phone.trim()){
                 return res.status(400).send({ status: false, message: "Given phone is already taken" })
@@ -22,11 +21,11 @@ const createUser = async (req, res) => {
         }
 
         // Creating user document
-        let data = await usermodel.create(requestBody)
+        let data = await userModel.create(requestBody)
         return res.status(201).send({ status: true, message:"Success", data: data })
     }
     catch (err) {
-        res.status(500).send({ status:false, message: err.message })
+        return res.status(500).send({ status:false, message: err.message })
     }
 }
 
@@ -52,7 +51,7 @@ const userlogin = async function (req, res) {
             return res.status(400).send({ status: false, msg: "Please provide password" })
         }
 
-        let userDetails = await usermodel.findOne({ email, password })
+        let userDetails = await userModel.findOne({ email, password })
         if (!userDetails) {
             return res.status(404).send({ status: false, msg: "Incorrect credentials" })
         }
@@ -62,10 +61,10 @@ const userlogin = async function (req, res) {
             { expiresIn: '1h' }
         )
         
-        res.status(201).send({ status: true, message:"Success", data:{token:token} });
+        return res.status(201).send({ status: true, message:"Success", data:{token:token} });
 
     } catch (err) {
-        res.status(500).send({status:false, msg:err.message})
+        return res.status(500).send({status:false, message:err.message})
     }
 }
 

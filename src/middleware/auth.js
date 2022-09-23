@@ -21,7 +21,7 @@ const authenticationMid = (req,res,next)=> {
         )
     }
     catch(err){
-        res.status(500).send({status:false, msg:err.message})
+        return res.status(500).send({status:false, msg:err.message})
 
     }
 }

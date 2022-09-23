@@ -1,6 +1,6 @@
-const usermodel = require('../models/userModel')
+
 const validation = require('../validators/validations')
-const jwt = require("jsonwebtoken")
+
 
 
 const createUserMid = async (req, res, next) => {
@@ -88,7 +88,7 @@ const createUserMid = async (req, res, next) => {
        next()
     }
     catch (err) {
-        res.status(500).send({ status:false, message: err.message })
+        return res.status(500).send({ status:false, message: err.message })
     }
 }
 

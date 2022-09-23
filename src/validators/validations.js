@@ -46,10 +46,16 @@ const isValidISBN=(data)=>{
     return false
 } 
 
-const isValidreviews=(data)=>{
-    if(typeof data =="number" && data.trim().length !==0 && /^[0-9]+$/.test(data)) return true
+// const isValidreviews=(data)=>{
+//     if(typeof data =="number" && data.trim().length !==0 && /^[0-9]+$/.test(data)) return true
+//     return false
+// }
+
+const isValidObjectId = (data) => {
+    if (mongoose.Types.ObjectId.isValid(data))  return true
     return false
 }
+
 
 const isValidrating=(data)=>{
     if(typeof data =="number" && data.trim().length !==0 && /^([1-5])$/.test(data)) return true
@@ -66,5 +72,6 @@ module.exports={
     isValid,
     isValidISBN,
     isValidreviews,
-    isValidrating
+    isValidrating,
+    isValidObjectId
 }
