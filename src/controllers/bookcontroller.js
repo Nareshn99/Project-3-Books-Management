@@ -43,7 +43,7 @@ const getBookByQueryParam = async (req, res) => {
             return res.status(404).send({ status: false, message: "No booksfound" });
         }
 
-        return res.status(200).send({ status: true, message: 'successfully book details', data: books });
+        return res.status(200).send({ status: true, message: 'Books List', data: books });
 
     } catch (err) {
         return res.status(500).send({ status: false, message: err.message })
@@ -136,7 +136,7 @@ const deleteById = async (req, res) => {
             return res.status(403).send({status:false, message:"unauthorized access"})
         } 
 
-        let update = await bookModel.findOneAndUpdate({ _id:bookId }, { isDeleted: true, deletedAt:moment().format("YYYY-MM-DD") }, { new: true });
+        let update = await bookModel.findOneAndUpdate({ _id:bookId }, { isDeleted: true, deletedAt:moment().format("YYYY-MM-DD , h:mm:ss a") }, { new: true });
 
         return res.status(200).send({ status: true, message: "successfully deleted" });
 

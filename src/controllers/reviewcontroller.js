@@ -15,10 +15,11 @@ const createReview = async (req, res) => {
         let reviewDoc = await reviewModel.create(requestbody)
 
         // updating book doc
-        let update = await bookModel.findOneAndUpdate({ _id: bookId }, { $inc: { reviews: 1 } }, { new: true }).lean();
+        let update = await bookModel.findOneAndUpdate({ _id: bookId,isDeleted:false }, { $inc: { reviews: 1 } }, { new: true }).lean();
         if (!update) {
-            return res.status(404).send({ status: false, message: "Book is not found for this ID" })
+            return res.status(404).send({ status: false, message: "Book is not found " })
         }
+
         update.reviewsData=reviewDoc
 
         return res.status(201).send({ status: true, message: "Success", data: update })
@@ -44,10 +45,11 @@ const updateReview = async (req, res) => {
                 
         // updating review doc
         let updatedReview = await reviewModel.findOneAndUpdate({ _id: reviewId, isDeleted: false }, {
-            $set: {
+            $set:
                 requestbody
-            }, new: true
-        })
+            },{ new: true}
+        )
+     
         if (!updatedReview) {
             return res.status(404).send({ status: false, message: "review is not found for this ID" })
         }
@@ -82,11 +84,11 @@ const deleteReview = async (req, res) => {
         }
 
         // updating book doc
-        let updateBook = await bookModel.findOneAndUpdate({ _id: bookId }, { $inc: { reviews: -1 } }, { new: true });
+        let updateBook = await bookModel.findOneAndUpdate({ _id: bookId , isDeleted:false}, { $inc: { reviews: -1 } }, { new: true });
         if (!updateBook) {
             return res.status(404).send({ status: false, message: "Book is not found " })
         }
-        return res.status(200).send({ status: true, message: "Review Deleted", data: updateBook })
+        return res.status(200).send({ status: true, message: "Review Deleted" })
 
     }
     catch (err) {

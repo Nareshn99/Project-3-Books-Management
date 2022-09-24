@@ -1,5 +1,4 @@
-const reviewmodel = require('../models/reviewModel')
-const bookmodel = require('../models/bookModel')
+
 const mongoose = require("mongoose")
 const moment = require("moment")
 const validation = require("../validators/validations")
@@ -8,7 +7,7 @@ const createReviewMid = async (req, res, next) => {
     try {
 
         const requestbody = req.body
-        let { reviewedBy, rating, review } = requestbody
+        let { reviewedBy, rating, review , reviewedAt} = requestbody
         let bookId = req.params.bookId
 
 
@@ -19,18 +18,32 @@ const createReviewMid = async (req, res, next) => {
        
         //check for empty requestBody
         if (Object.keys(requestbody).length == 0) {
-            return res.status(400).send({ status: false, message: "Please provide book details" })
-        }
-        requestbody.bookId = bookId
-        if (!validation.isValidName(reviewedBy)) {
-            return res.status(400).send({ status: false, message: "ReviewedBy should be alphabatical Order And String is valid" })
+            return res.status(400).send({ status: false, message: "Please provide reviewer details" })
         }
 
-    
-        requestbody.reviewedAt=moment().format("YYYY-MM-DD")
+        requestbody.bookId = bookId
+        if(reviewedBy){
+            if (!validation.isValidName(reviewedBy)) {
+                return res.status(400).send({ status: false, message: "ReviewedBy should be alphabatical Order And String is valid" })
+            }
+        }
+
+        // validating reviewedAt
+        if (!reviewedAt) {
+            return res.status(400).send({ status: false, message: "reviewedAt is mandatory" })
+        }
+        
+        if (!moment(reviewedAt, "YYYY-MM-DD", true).isValid()) {
+            return res.status(400).send({ status: false, msg: "reviewedAt should be in YYYY-MM-DD format" })
+        }
+        let date = moment().subtract(1,"d").format("YYYY-MM-DD")
+        if (!moment(reviewedAt).isAfter(date)) {
+            return res.status(400).send({ status: false, msg: "pls provide an upcoming date" })
+        }
+       
 
         //validation for rating
-        if ( rating == undefined) {
+        if (typeof rating == undefined) {
             return res.status(400).send({ status: false, message: "Rating is mandatory" })
         }
         if (!validation.isValidrating(rating)) {
@@ -55,7 +68,7 @@ const updateReviewMid = async (req, res, next) => {
     try {
 
         const requestbody = req.body
-        let { rating, review, reviewedBy } = requestbody
+        let { rating, review, reviewedBy } = req.body
         let bookId = req.params.bookId
         let reviewId = req.params.reviewId
 
@@ -69,10 +82,18 @@ const updateReviewMid = async (req, res, next) => {
 
 
         //check for empty requestBody
-        if (Object.keys(requestbody).length == 0) {
+        if (Object.keys(req.body).length == 0) {
             return res.status(400).send({ status: false, message: "Please provide book details" })
         }
 
+        //Check for only updating rating, reviewedBy,review
+        let arr=[rating,reviewedBy,review]
+        for(let key in req.body){
+            if(!arr.includes(key)){
+                res.status(400).send({status:false, message:`${key} can't be updated`})
+                return
+            }
+        }
         //validation for rating
         if (rating != undefined) {
             if (!validation.isValidrating(rating)) {

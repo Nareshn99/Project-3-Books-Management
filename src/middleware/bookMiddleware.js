@@ -71,18 +71,18 @@ const createBookMid = async (req, res,next) => {
         }
 
         //validation for releasedAt
-        if (releasedAt) {
-            if (!moment(releasedAt, "YYYY-MM-DD", true).isValid()) {
-                return res.status(400).send({ status: false, msg: "releasedAt should be in YYYY-MM-DD format" })
-            }
-            let date = moment().format("YYYY-MM-DD")
-            if (!moment(releasedAt).isAfter(date)) {
-                return res.status(400).send({ status: false, msg: "pls provide an upcoming date" })
-            }
-        }
         if (!releasedAt) {
-            requestBody.releasedAt = moment().add(3, 'months').format("YYYY-MM-DD")
+            return res.status(400).send({ status: false, message: "releasedAt is mandatory" })
         }
+        
+        if (!moment(releasedAt, "YYYY-MM-DD", true).isValid()) {
+            return res.status(400).send({ status: false, msg: "releasedAt should be in YYYY-MM-DD format" })
+        }
+        let date = moment().format("YYYY-MM-DD")
+        if (!moment(releasedAt).isAfter(date)) {
+            return res.status(400).send({ status: false, msg: "pls provide an upcoming date" })
+        }
+        
 
         req.requestBody=requestBody
         next()
@@ -97,11 +97,6 @@ const getBookByQueryParamMid = async (req, res, next) => {
     try {
         let newData = req.query
         const { userId, category, subcategory } = newData
-
-        //check for empty requestBody
-        if (Object.keys(newData).length == 0) {
-            return res.status(400).send({ status: false, message: "queries shouldn't be empty" })
-        }
 
         let arr=["userId", "category", "subcategory"]
         for(let key in newData){
