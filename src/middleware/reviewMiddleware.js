@@ -87,7 +87,7 @@ const updateReviewMid = async (req, res, next) => {
         }
 
         //Check for only updating rating, reviewedBy,review
-        let arr=[rating,reviewedBy,review]
+        let arr=["rating","reviewedBy","review"]
         for(let key in req.body){
             if(!arr.includes(key)){
                 res.status(400).send({status:false, message:`${key} can't be updated`})
