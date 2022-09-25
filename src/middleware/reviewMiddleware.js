@@ -83,7 +83,7 @@ const updateReviewMid = async (req, res, next) => {
 
         //check for empty requestBody
         if (Object.keys(req.body).length == 0) {
-            return res.status(400).send({ status: false, message: "Please provide book details" })
+            return res.status(400).send({ status: false, message: "Please provide reviewer details to update" })
         }
 
         //Check for only updating rating, reviewedBy,review
