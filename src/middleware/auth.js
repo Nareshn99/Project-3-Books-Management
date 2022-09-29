@@ -18,13 +18,14 @@ const authenticationMid = (req,res,next)=> {
                 next()
             }
         )
+        
     }
     catch(err){
         return res.status(500).send({status:false, msg:err.message})
 
     }
 }
-
+//    authentication=>tokenVerufy=>authorization
 module.exports={
     authenticationMid
 }

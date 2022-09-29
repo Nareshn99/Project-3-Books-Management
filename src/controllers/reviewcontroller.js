@@ -2,7 +2,7 @@ const reviewModel = require('../models/reviewModel')
 const bookModel = require('../models/bookModel')
 const mongoose = require("mongoose")
 const moment = require("moment")
-const validation = require("../validators/validations")
+const validation = require("../utils/validations")
 
 const createReview = async (req, res) => {
     try {

@@ -1,5 +1,5 @@
 
-const validation = require('../validators/validations')
+const validation = require('../utils/validations')
 
 
 
@@ -79,7 +79,7 @@ const createUserMid = async (req, res, next) => {
                 }
             }
             if(street){
-                if(typeof (street) == "string" && street.trim().length==0){
+                if(typeof (street) != "string" || street.trim().length==0){
                     return res.status(400).send({status:false,msg:"street value can't be empty / String type"})
                 }
             }                                                                

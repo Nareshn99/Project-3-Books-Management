@@ -3,7 +3,8 @@ const usermodel = require('../models/userModel')
 const reviewModel = require('../models/reviewModel')
 const mongoose = require("mongoose")
 const moment = require("moment")
-const validation = require("../validators/validations")
+const validation = require("../utils/validations")
+const aws = require("../utils/aws")
 
 const createBook = async (req, res) => {
 
@@ -21,6 +22,17 @@ const createBook = async (req, res) => {
                 return res.status(400).send({ status: false, message: "Given ISBN is already taken" })
             }
         }
+
+        // creating AWS link
+        let file = req.files;
+        if (file && file.length > 0) {
+            const url = await aws.uploadFile(file[0]);
+            requestBody.bookCover=url
+        }
+        else {
+            return res.status(400).send({ status: false, message: "no file added" });
+        }
+        
        
         // Creating book document
         let newBook = await bookModel.create(requestBody)

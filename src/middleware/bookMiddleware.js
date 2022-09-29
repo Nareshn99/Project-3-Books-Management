@@ -1,14 +1,13 @@
-
 const mongoose = require("mongoose")
 const moment = require("moment")
-const validation = require("../validators/validations")
-
+const validation = require("../utils/validations")
 
 
 const createBookMid = async (req, res,next) => {
 
     try {
         let requestBody = req.body;
+        
         let { title, excerpt, userId, ISBN, category, subcategory, releasedAt } = requestBody
 
         //check for empty requestBody
@@ -42,8 +41,6 @@ const createBookMid = async (req, res,next) => {
             return res.status(400).send({ status: false, msg: "Invalid userID" })
         }
 
-       
-
         //validation for ISBN
         if (!ISBN) {
             return res.status(400).send({ status: false, message: "ISBN is mandatory" })
@@ -51,8 +48,6 @@ const createBookMid = async (req, res,next) => {
         if (!validation.isValidISBN(ISBN)) {
             return res.status(400).send({ status: false, message: "Invalid ISBN" })
         }
-
-       
 
         //validation for category
         if (!category) {

@@ -16,6 +16,10 @@ const bookSchema = new mongoose.Schema({
         trim: true,
         lowercase:true
     },
+    bookCover:{
+        type:String, 
+        required:true
+    },
     userId: {
         type: ObjectId,
         required: true,

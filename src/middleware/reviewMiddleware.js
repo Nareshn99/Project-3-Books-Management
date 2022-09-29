@@ -1,7 +1,7 @@
 
 const mongoose = require("mongoose")
 const moment = require("moment")
-const validation = require("../validators/validations")
+const validation = require("../utils/validations")
 
 const createReviewMid = async (req, res, next) => {
     try {
@@ -83,12 +83,13 @@ const updateReviewMid = async (req, res, next) => {
 
         //check for empty requestBody
         if (Object.keys(req.body).length == 0) {
-            return res.status(400).send({ status: false, message: "Please provide book details" })
+            return res.status(400).send({ status: false, message: "Please provide revi details" })
         }
 
         //Check for only updating rating, reviewedBy,review
-        let arr=[rating,reviewedBy,review]
+        let arr=["rating","reviewedBy","review"]
         for(let key in req.body){
+            console.log(arr.includes(key))
             if(!arr.includes(key)){
                 res.status(400).send({status:false, message:`${key} can't be updated`})
                 return

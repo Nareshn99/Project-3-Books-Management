@@ -1,5 +1,5 @@
 const userModel = require('../models/userModel')
-const validation = require('../validators/validations')
+const validation = require('../utils/validations')
 const jwt = require("jsonwebtoken")
 
 
@@ -7,7 +7,7 @@ const createUser = async (req, res) => {
     try {
         let requestBody = req.body
 
-        let { phone, email, } = requestBody
+        let { phone, email } = requestBody
         
         // Check for uniqueness of phone and email
         let user = await userModel.find({$or : [ {phone} , {email} ] })

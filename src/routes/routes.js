@@ -9,14 +9,20 @@ const bookMid = require("../middleware/bookMiddleware");
 const reviewMid = require("../middleware/reviewMiddleware")
 
 
+
+
+
 router.get('/test-me', (req, res) => {
     res.send("this API run succesfully...")
 })
 
 
+
+
 //API for USER
 router.post('/register',userMid.createUserMid, usercontroller.createUser)
 router.post('/login', usercontroller.userlogin)
+
 
 //API for BOOKS
 router.post('/books',authMid.authenticationMid,bookMid.createBookMid, bookcontroller.createBook)

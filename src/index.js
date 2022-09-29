@@ -1,10 +1,12 @@
 const express = require('express');
 const route = require('./routes/routes.js');
+const multer = require("multer")
 
-const mongoose = require('mongoose');
-const app = express();
+const mongoose = require('mongoose')
+const app = express()
 
-app.use(express.json());
+app.use(express.json())
+app.use(multer().any())
 
 
 mongoose.connect("mongodb+srv://priyanka99:EorbzmKpqdV7ml9W@cluster0.puozp1a.mongodb.net/Group46Database?retryWrites=true&w=majority", {
